@@ -4,10 +4,9 @@ import java.util.Scanner;
 
 public class MemorySimulator {
     public static listaLigada listaLivre, listaAlocada;
-    public static int enderecoAux = 0;
     
     public static void main(String[] args) {
-        int memory, processID, maximumSize = 4000, choice;
+        int processID, maximumSize = 4000, choice;
         boolean running = false;
         
         System.out.println("----------------------------------");
@@ -19,8 +18,11 @@ public class MemorySimulator {
         listaAlocada = new listaLigada();
         Scanner sc = new Scanner(System.in);
         
+        // getInicio() retorna o PRIMEIRO No da lista
+        // getProx() retorna o PRIMEIRO No da lista
+        
         running = true;
-        processID = 0;
+        processID = 1; // Começo dos processos, IDs serão incrementais
         
         while(running) {
             System.out.println("----------------------------------------");
@@ -31,14 +33,15 @@ public class MemorySimulator {
 
             switch (choice) {
                 case 1:
-                    System.out.println("- Qual o tamanho do processo que será iniciado?");
-                    memory = sc.nextInt();    
+                    System.out.printf("- Qual o tamanho do processo que será iniciado?");
+                    int memory = sc.nextInt();
                     insert(processID, memory);
-                    tick();
                     processID++;
                     break;
                 case 2:
-                    System.out.println("- Ainda não implementado.");
+                    System.out.printf("- Qual a indentificação do processo a ser removido?");
+                    int ID = sc.nextInt();
+                    remove(ID);
                     break;
                 case 3:
                     running = false;
@@ -47,6 +50,7 @@ public class MemorySimulator {
                     System.out.println("- Código não reconhecido.");
                     break;
             }
+            tick();
         }
     }
     
@@ -55,31 +59,24 @@ public class MemorySimulator {
     }
     
     public static void insert (int processID, int memory) {
-        if ( listaLivre.getAvailableSpace() ) {
-            listaAlocada.add(processID, memory, listaLivre);
-            // getInicio() retorna o PRIMEIRO No da lista
-            // getProx() retorna o PRIMEIRO No da lista
-            if ( listaAlocada.getInicio().getProx() != null ) {
-                listaAlocada.getInicio().setEndereco(listaAlocada.getInicio().getProx().getEndereco());
-            } else {
-                listaAlocada.getInicio().setEndereco(listaAlocada.getInicio().getEndereco());
-            }
+        if ( listaLivre.availableSpace() > 0 ) {
+            listaLivre = listaAlocada.addAlocada(processID, memory, listaLivre);
             
-            listaLivre.getInicio().setEndereco(listaAlocada.getInicio().getEndereco());
-            
-            listaLivre.size -= memory;
-            listaAlocada.size += memory;
-            
-            System.out.println("- Processo: " + processID + " alocado sucesso.");
+            System.out.println("- Processo: " + processID + " alocado com sucesso.");
             System.out.println("----------------------------------------");
-            System.out.println("- Espaço disponível: " + listaLivre.size);
-            System.out.println("- Espaço alocado: " + listaAlocada.size);
+            System.out.println("- Espaço disponível: " + listaLivre.availableSpace());
+            System.out.println("- Espaço alocado: " + listaAlocada.usedSpace());
             System.out.println("----------------------------------------");
-            
-            enderecoAux += memory;
         } else {
             System.out.println("- Memória cheia. É necessário remover um processo.");
             System.out.println("----------------------------------------");
         }
+    }
+    
+    public static void remove (int ID) {
+        No no = listaAlocada.buscaID(ID);
+        System.out.println("No: " + no.getID() + ", no endereço: " + no.getEndereco() + ", tamanho: " + no.getTamanho());
+        System.out.println("Começo da lista livre: " + listaLivre.getInicio().getEndereco());
+        listaLivre.addOrdenado(no);
     }
 }

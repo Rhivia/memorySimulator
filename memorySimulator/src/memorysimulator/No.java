@@ -4,22 +4,42 @@ public class No {
     private int ID;
     private int endereco = 0;
     public int tamanho;
+    
     private No prox;
 
-    public No(int ID, int tamanho, int endereco, No prox) {
-        this.tamanho = tamanho;        
-        this.prox = prox;
-        this.ID = ID;
+    // No inicial para LISTA LIVRE
+    public No(int tamanho, int endereco) {
+        this.ID = -1; // Nós da lista livre não possuem ID, usaremos -1 para isso.
+        this.prox = null; // Como o construtor iniciará a lista, o próximo No é nulo.
         
-        if(endereco == 0) {
-            this.endereco = 0;
-        } else {
-            this.endereco = endereco;
-        }
+        this.tamanho = tamanho;
+        this.endereco = endereco; // Ao realizar o primeiro No, ele começaré com endereço 0.
+    }
+    
+    // No inicial para LISTA ALOCADA
+    // Adicionamos um No para o final da lista alocada, o proximo sempre será nulo
+    public No(int ID, int tamanho, int endereco) {
+        this.ID = ID; // ID incremental
+        this.prox = null;
+        
+        this.tamanho = tamanho;
+        this.endereco = endereco;
+    }
+    
+    public No(No prox, int tamanho, int endereco) {
+        this.ID = -1; // ID incremental
+        this.prox = prox;
+        
+        this.tamanho = tamanho;
+        this.endereco = endereco;
     }
 
     public int getTamanho() {
         return tamanho;
+    }
+    
+    public void setTamanho(int tamanho) {
+        this.tamanho = tamanho;
     }
 
     public int getEndereco() {
@@ -49,8 +69,8 @@ public class No {
     @Override
     public String toString() {
         if (this.prox == null)
-            return "Processo " + this.ID + " esta utilizando " + this.tamanho + " de espaço a partir do endereco " + this.endereco + ".";
+            return "Processo ID: " + this.ID + " esta utilizando " + this.tamanho + " de memória. No endereço " + this.endereco;
         else
-            return "Processo " + this.ID + " esta utilizando " + this.tamanho + " de espaço a partir do endereco " + this.endereco + " \n" + this.prox;
+            return "Processo ID: " + this.ID + " esta utilizando " + this.tamanho + " de memória. No endereço " + this.endereco + "\n" + this.prox;
     }
 }
