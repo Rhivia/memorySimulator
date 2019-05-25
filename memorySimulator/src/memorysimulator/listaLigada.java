@@ -178,10 +178,16 @@ public class listaLigada {
 
         // Busca a ID e sobrescreve o No pelo próximo No da Lista, efetivamente apagando-o
         while( aux != null ){
-            if( aux.getID() == ID) {
+            // FIX ME - Comparar ID para atualizar o PROX correto
+            if( this.inicio.getID() == aux.getID()) {
+                aux = this.inicio;
+                this.inicio = this.inicio.getProx();
+                return aux;
+            } else if( aux.getID() == ID ) {
                 atual.setProx(aux.getProx()); // Selectiona o No que tem o tamanho apropriada para o processo
                 return aux;
             }
+
             atual = aux;
             aux = aux.getProx(); // Pega o próximo No
         }
