@@ -49,7 +49,6 @@ public class listaLigada {
         
         return false;
     }
-
     
     
     // Adiciona No a LISTA LIVRE, chamada somente quando um processo é finalizado
@@ -70,11 +69,8 @@ public class listaLigada {
         // No(int ID, int tamanho, No prox, int endereco) {
         No novo = new No(noID, tamanho, listaLivre.getInicio().getEndereco());
         
-        // Atualiza o endereço da LISTA LIVRE
-        listaLivre.getInicio().setEndereco(listaLivre.getInicio().getEndereco() + tamanho);
-        
-        // Atualiza o tamanho do primeiro No da LISTA LIVRE
-        listaLivre.getInicio().setTamanho( listaLivre.getInicio().getTamanho() - tamanho );
+        // Função de loop na lista livre, aloca o processo no menor No que comporte o processo
+        listaLivre.updateNo(tamanho);
         
         if( atual == null ) {
             this.inicio = novo;
@@ -83,6 +79,32 @@ public class listaLigada {
         }
         
         return listaLivre;
+    }
+    
+    // Função a ser executada na LISTA LIVRE, encontra e atualiza o endereço do
+    // menor No que comporta o processo.
+    public void updateNo (int tamanho) {
+        No aux = this.inicio;
+        No atual = null;
+        No selected = this.inicio;
+        
+        while( aux != null ){
+            if (aux.getTamanho() >= tamanho && selected.getTamanho() > aux.getTamanho()) {
+                selected = aux; // Selectiona o No que tem o tamanho apropriada para o processo
+            }
+            
+            atual = aux; // Salva o No anterior
+            aux = aux.getProx(); // Pega o próximo No
+        }
+        
+        // Atualiza o endereço do No da LISTA LIVRE
+        selected.setEndereco(selected.getEndereco() + tamanho);
+        // Atualiza o tamanho do No da LISTA LIVRE
+        selected.setTamanho(selected.getTamanho() - tamanho);
+        
+        if (selected.getTamanho() == 0) {
+            selected = selected.getProx();
+        }
     }
     
     // Adiciona um No em uma posição de maneira ordenada na lista
