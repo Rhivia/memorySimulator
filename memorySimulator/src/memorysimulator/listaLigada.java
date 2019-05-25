@@ -1,4 +1,4 @@
-﻿package memorysimulator;
+package memorysimulator;
 
 public class listaLigada {
     private No inicio;// endereço inicial da lista

@@ -1,4 +1,4 @@
-﻿package memorysimulator;
+package memorysimulator;
 
 import java.util.Scanner;
 
