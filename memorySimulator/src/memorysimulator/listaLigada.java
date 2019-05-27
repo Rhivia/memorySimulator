@@ -19,6 +19,10 @@ public class listaLigada {
     public No getInicio() {
         return inicio;
     }
+    
+    public No setInicio(No no) {
+        return inicio = no;
+    }
 
     // Para exeibição dos nós
     public String toStringAlocada() {
@@ -90,38 +94,52 @@ public class listaLigada {
         return listaLivre;
     }
 
-    // Reorganiza Nós caso encontre um que não tenha mais espaço
+    // Reorganiza NODES:
+    // - Ao encontrar um NODE com 0 de memória.
+    // - Ao encontrar um NODE que acaba ao final do próximo
     public void clearNodes(){
-        No aux = this.inicio;
+        No currentNode = this.inicio;
+        No nextNode = null;
+        int enderecoFinal = 0;
+        
+        if (currentNode.getProx() != null) {
+            nextNode = currentNode.getProx();
+        }
 
-        while( aux != null ){
-            System.out.println("No: " + aux.getID());
-            if (aux.getTamanho() == 0) {
-                aux.setProx(aux.getProx()); // Selectiona o No que tem o tamanho apropriada para o processo
+        while( currentNode != null && nextNode != null ){
+            enderecoFinal = currentNode.getEndereco() + currentNode.getTamanho();
+            
+            if (enderecoFinal == nextNode.getEndereco()) {
+                currentNode.setProx(nextNode.getProx());
+                currentNode.setTamanho(currentNode.getTamanho() + nextNode.getTamanho());
             }
 
-            aux = aux.getProx(); // Pega o próximo No
+            currentNode = currentNode.getProx(); // Pega o próximo No
+            if (nextNode.getProx() != null) // Verifica se o NODE não é nulo
+                nextNode = currentNode.getProx();
         }
     }
 
     // Função a ser executada na LISTA LIVRE, encontra e atualiza o endereço do
     // menor No que comporta o processo.
     public void useBestNode(int tamanho) {
-        No aux = this.inicio;
-        No selected = this.inicio;
+        No atual = this.inicio;
+        No selected = null;
 
-        while( aux != null ){
-            if (aux.getTamanho() >= tamanho && selected.getTamanho() > aux.getTamanho()) {
-                selected = aux; // Selectiona o No que tem o tamanho apropriada para o processo
+        while( atual != null ){
+            if (atual.getTamanho() >= tamanho) {
+                selected = atual; // Selectiona o No que tem o tamanho apropriada para o processo
             }
 
-            aux = aux.getProx(); // Pega o próximo No
+            atual = atual.getProx(); // Pega o próximo No
         }
 
-        // Atualiza o endereço do No da LISTA LIVRE
-        selected.setEndereco(selected.getEndereco() + tamanho);
-        // Atualiza o tamanho do No da LISTA LIVRE
-        selected.setTamanho(selected.getTamanho() - tamanho);
+        if ( selected != null ) {
+            // Atualiza o endereço do No da LISTA LIVRE
+            selected.setEndereco(selected.getEndereco() + tamanho);
+            // Atualiza o tamanho do No da LISTA LIVRE
+            selected.setTamanho(selected.getTamanho() - tamanho);
+        }
 
         if (selected.getTamanho() == 0) {
             selected = selected.getProx(); // Atualiza a referência para o próximo No
@@ -163,12 +181,12 @@ public class listaLigada {
 
     // Metódo para ser utilizado na LISTA LIVRE
     public int availableSpace() {
-        No aux = this.inicio;
+        No atual = this.inicio;
         int availableSpace = 0;
 
-        while( aux != null ){
-            availableSpace += aux.getTamanho(); // Retorna o tamanho do No
-            aux = aux.getProx(); // Pega o próximo No
+        while( atual != null ){
+            availableSpace += atual.getTamanho(); // Retorna o tamanho do No
+            atual = atual.getProx(); // Pega o próximo No
         }
 
         return availableSpace;
@@ -179,40 +197,42 @@ public class listaLigada {
         No currentNode = this.getInicio();
         No nextNode = currentNode.getProx();
         
-        System.out.println("Atual: " + currentNode.getID() + ", prox: " + nextNode.getID() + ", target: " + ID);
-        if (nextNode.getProx() != null)
-            System.out.println("Atual ID: " + currentNode.getProx().getID() + ", prox ID: " + nextNode.getProx().getID());
+        // DEBUG
+//        if (nextNode != null && nextNode.getProx() != null) {
+//            System.out.println("Atual: " + currentNode.getID() + ", prox: " + nextNode.getID() + ", target: " + ID);
+//            System.out.println("Atual ID: " + currentNode.getProx().getID() + ", prox ID: " + nextNode.getProx().getID());
+//        }
 
         // Busca a ID e sobrescreve o No pelo próximo No da Lista, efetivamente apagando-o
-        while( currentNode != null ){            
-            if( currentNode.getID() == ID) { // Se o valor do NODE seguinte for a ID
+        while( currentNode != null ){
+            System.out.println("Buscando NODE a ser removido...");
+            
+            if( nextNode != null && currentNode.getID() == ID ) { // Se o valor do NODE ATUAL for a ID
+                No deadNode = currentNode; // Recebe o valor do NODE a ser removido
+                this.setInicio(nextNode); // Associa o novo NODE de inicio
+                return deadNode; // Retorna o NODE que sera removido
+                
+            } else if( nextNode != null && nextNode.getID() == ID ) { // Se o valor do NODE SEGUINTE for a ID
                 No deadNode = nextNode; // Recebe o valor do NODE a ser removido
                 nextNode = nextNode.getProx(); // Recebe o NODE apos o NODE avancado
                 currentNode.setProx(nextNode); // Atualiza o valor do NODE atual para o NODE Avancado
                 return deadNode; // Retorna o NODE que sera removido
                 
-            } else if( nextNode.getID() == ID) { // Se o valor do NODE seguinte for a ID
-                No deadNode = nextNode; // Recebe o valor do NODE a ser removido
-                System.out.println("Node morto: " + deadNode.getID());
-                if (nextNode.getProx() != null) {
-                    nextNode = nextNode.getProx(); // Recebe o NODE apos o NODE avancado
-                    System.out.println("Node a receber a indicacao: " + nextNode.getID());
-                    currentNode.setProx(nextNode); // Atualiza o valor do NODE atual para o NODE Avancado
-                } else {
-                    System.out.println("Ultimo Node removido.");
-                    currentNode.setProx(null); // Atualiza o valor do NODE atual para o NODE Avancado
-                }
-                return deadNode; // Retorna o NODE que sera removido
-            } else if( nextNode.getID() != ID ) {
-                currentNode = currentNode.getProx();
-                nextNode = currentNode.getProx();
+            } else if ( nextNode == null && currentNode.getID() == ID) {
+                currentNode = null;
             }
+            
+            if (nextNode.getProx() != null) nextNode = nextNode.getProx();            
+            currentNode = currentNode.getProx();
         }
+        
         return currentNode; // Retorna o NODE nulo.
     }
     
     
-    
+//    if (currentNode.getID() == this.getInicio().getID()) {
+//                this.inicio = null;
+//            } else
     
     
     

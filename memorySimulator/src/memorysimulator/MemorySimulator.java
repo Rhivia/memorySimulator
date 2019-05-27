@@ -63,7 +63,6 @@ public class MemorySimulator {
     public static void insert (int processID, int memory) {
         if ( listaLivre.availableSpace() > 0 ) {
             listaLivre = listaAlocada.addAlocada(processID, memory, listaLivre);
-            listaLivre.clearNodes();
 
             System.out.println("- Processo: " + processID + " alocado com sucesso.");
             System.out.println("----------------------------------------");
@@ -79,8 +78,9 @@ public class MemorySimulator {
     public static void remove (int ID) {
         No no = listaAlocada.buscaERemove(ID);
         if (no != null) listaLivre.addOrdenado(no);
+        listaLivre.clearNodes();
         // System.out.println("No: " + no.getID() + ", no endereço: " + no.getEndereco() + ", tamanho: " + no.getTamanho());
-        if ( (no.getEndereco() + no.getTamanho()) == listaLivre.getInicio().getEndereco() ) {
+        if ( no != null && (no.getEndereco() + no.getTamanho()) == listaLivre.getInicio().getEndereco() ) {
             listaLivre.getInicio().setEndereco( no.getEndereco() );
         }
     }
