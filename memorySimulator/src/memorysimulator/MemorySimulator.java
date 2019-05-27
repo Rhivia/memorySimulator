@@ -1,4 +1,4 @@
-﻿package memorysimulator;
+package memorysimulator;
 
 import java.util.Scanner;
 
@@ -78,7 +78,7 @@ public class MemorySimulator {
 
     public static void remove (int ID) {
         No no = listaAlocada.buscaERemove(ID);
-        listaLivre.addOrdenado(no);
+        if (no != null) listaLivre.addOrdenado(no);
         // System.out.println("No: " + no.getID() + ", no endereço: " + no.getEndereco() + ", tamanho: " + no.getTamanho());
         if ( (no.getEndereco() + no.getTamanho()) == listaLivre.getInicio().getEndereco() ) {
             listaLivre.getInicio().setEndereco( no.getEndereco() );

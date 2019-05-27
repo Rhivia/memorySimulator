@@ -1,4 +1,4 @@
-﻿package memorysimulator;
+package memorysimulator;
 
 public class No {
     private int ID;

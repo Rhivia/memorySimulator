@@ -1,4 +1,4 @@
-﻿package memorysimulator;
+package memorysimulator;
 
 public class listaLigada {
     private No inicio;// endereço inicial da lista
@@ -23,7 +23,10 @@ public class listaLigada {
     // Para exeibição dos nós
     public String toStringAlocada() {
         System.out.println("Processos: ");
-        return this.inicio.toStringAlocada() + "";
+        if (this.inicio != null)
+            return this.inicio.toStringAlocada() + "";
+        else 
+            return "Não há nenhum processo em execução";
     }
 
     // Para exeibição dos nós
@@ -173,36 +176,59 @@ public class listaLigada {
 
     // Função para ser utilizada na LISTA ALOCADA
     public No buscaERemove(int ID) {
-        No aux = this.inicio;
-        No atual = null;
+        No currentNode = this.getInicio();
+        No nextNode = currentNode.getProx();
+        
+        System.out.println("Atual: " + currentNode.getID() + ", prox: " + nextNode.getID() + ", target: " + ID);
+        if (nextNode.getProx() != null)
+            System.out.println("Atual ID: " + currentNode.getProx().getID() + ", prox ID: " + nextNode.getProx().getID());
 
         // Busca a ID e sobrescreve o No pelo próximo No da Lista, efetivamente apagando-o
-        while( aux != null ){
-            // FIX ME - Comparar ID para atualizar o PROX correto
-            if( this.inicio.getID() == aux.getID()) {
-                aux = this.inicio;
-                this.inicio = this.inicio.getProx();
-                return aux;
-            } else if( aux.getID() == ID ) {
-                atual.setProx(aux.getProx()); // Selectiona o No que tem o tamanho apropriada para o processo
-                return aux;
+        while( currentNode != null ){            
+            if( currentNode.getID() == ID) { // Se o valor do NODE seguinte for a ID
+                No deadNode = nextNode; // Recebe o valor do NODE a ser removido
+                nextNode = nextNode.getProx(); // Recebe o NODE apos o NODE avancado
+                currentNode.setProx(nextNode); // Atualiza o valor do NODE atual para o NODE Avancado
+                return deadNode; // Retorna o NODE que sera removido
+                
+            } else if( nextNode.getID() == ID) { // Se o valor do NODE seguinte for a ID
+                No deadNode = nextNode; // Recebe o valor do NODE a ser removido
+                System.out.println("Node morto: " + deadNode.getID());
+                if (nextNode.getProx() != null) {
+                    nextNode = nextNode.getProx(); // Recebe o NODE apos o NODE avancado
+                    System.out.println("Node a receber a indicacao: " + nextNode.getID());
+                    currentNode.setProx(nextNode); // Atualiza o valor do NODE atual para o NODE Avancado
+                } else {
+                    System.out.println("Ultimo Node removido.");
+                    currentNode.setProx(null); // Atualiza o valor do NODE atual para o NODE Avancado
+                }
+                return deadNode; // Retorna o NODE que sera removido
+            } else if( nextNode.getID() != ID ) {
+                currentNode = currentNode.getProx();
+                nextNode = currentNode.getProx();
             }
-
-            atual = aux;
-            aux = aux.getProx(); // Pega o próximo No
         }
-        return null;
+        return currentNode; // Retorna o NODE nulo.
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     // Método para ser utilizado na LISTA ALOCADA
 //    public void endereco () {
-//        No aux = this.inicio;
-//        No atual = null;
+//        No nextNode = this.inicio;
+//        No currentNode = null;
 //
-//        while( aux != null ){
-//            atual = aux; // Salva o No anterior
-//            System.out.println(atual.getEndereco());
-//            aux = aux.getProx(); // Pega o próximo No
+//        while( nextNode != null ){
+//            currentNode = nextNode; // Salva o No anterior
+//            System.out.println(currentNode.getEndereco());
+//            nextNode = nextNode.getProx(); // Pega o próximo No
 //        }
 //    }
 //
@@ -211,14 +237,14 @@ public class listaLigada {
 //        return busca(x, this.inicio);
 //    }
 //
-//    private boolean busca(int target, No aux){
+//    private boolean busca(int target, No nextNode){
 //        // condicoes de parada
-//        if( aux == null )
+//        if( nextNode == null )
 //            return false;
 //
-//        if( aux.getID() == target)
+//        if( nextNode.getID() == target)
 //            return true;
 //
-//        return busca(target, aux.getProx());
+//        return busca(target, nextNode.getProx());
 //    }
 }
