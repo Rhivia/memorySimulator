@@ -26,6 +26,7 @@ public class listaLigada {
 
     // Para exeibição dos nós
     public String toStringAlocada() {
+        System.out.println("-------------------------------------------------");
         System.out.println("Processos: ");
         if (this.inicio != null)
             return this.inicio.toStringAlocada() + "";
@@ -100,23 +101,21 @@ public class listaLigada {
     public void clearNodes(){
         No currentNode = this.inicio;
         No nextNode = null;
-        int enderecoFinal = 0;
+        int enderecoFinal;
         
         if (currentNode.getProx() != null) {
             nextNode = currentNode.getProx();
         }
 
-        while( currentNode != null && nextNode != null ){
+        while( currentNode != null ){
             enderecoFinal = currentNode.getEndereco() + currentNode.getTamanho();
             
-            if (enderecoFinal == nextNode.getEndereco()) {
+            if ( nextNode != null && enderecoFinal == nextNode.getEndereco()) {
                 currentNode.setProx(nextNode.getProx());
                 currentNode.setTamanho(currentNode.getTamanho() + nextNode.getTamanho());
             }
-
+            
             currentNode = currentNode.getProx(); // Pega o próximo No
-            if (nextNode.getProx() != null) // Verifica se o NODE não é nulo
-                nextNode = currentNode.getProx();
         }
     }
 
@@ -124,25 +123,23 @@ public class listaLigada {
     // menor No que comporta o processo.
     public void useBestNode(int tamanho) {
         No atual = this.inicio;
-        No selected = null;
+        No selected = this.inicio;
 
         while( atual != null ){
-            if (atual.getTamanho() >= tamanho) {
+            if (atual.getTamanho() >= tamanho && selected.getTamanho() <= atual.getTamanho()) {
                 selected = atual; // Selectiona o No que tem o tamanho apropriada para o processo
             }
 
             atual = atual.getProx(); // Pega o próximo No
         }
 
-        if ( selected != null ) {
+        if (selected != null) {
             // Atualiza o endereço do No da LISTA LIVRE
             selected.setEndereco(selected.getEndereco() + tamanho);
             // Atualiza o tamanho do No da LISTA LIVRE
             selected.setTamanho(selected.getTamanho() - tamanho);
-        }
-
-        if (selected.getTamanho() == 0) {
-            selected = selected.getProx(); // Atualiza a referência para o próximo No
+        } else {
+            System.out.println("Melhor NODE para o processo não encontrado.");
         }
     }
 
@@ -197,12 +194,6 @@ public class listaLigada {
         No currentNode = this.getInicio();
         No nextNode = currentNode.getProx();
         
-        // DEBUG
-//        if (nextNode != null && nextNode.getProx() != null) {
-//            System.out.println("Atual: " + currentNode.getID() + ", prox: " + nextNode.getID() + ", target: " + ID);
-//            System.out.println("Atual ID: " + currentNode.getProx().getID() + ", prox ID: " + nextNode.getProx().getID());
-//        }
-
         // Busca a ID e sobrescreve o No pelo próximo No da Lista, efetivamente apagando-o
         while( currentNode != null ){
             System.out.println("Buscando NODE a ser removido...");
@@ -219,52 +210,14 @@ public class listaLigada {
                 return deadNode; // Retorna o NODE que sera removido
                 
             } else if ( nextNode == null && currentNode.getID() == ID) {
-                currentNode = null;
+                this.setInicio(null);
+                return currentNode;
             }
             
-            if (nextNode.getProx() != null) nextNode = nextNode.getProx();            
-            currentNode = currentNode.getProx();
+            if (nextNode != null) nextNode = nextNode.getProx();            
+            if (currentNode != null) currentNode = currentNode.getProx();
         }
         
         return currentNode; // Retorna o NODE nulo.
     }
-    
-    
-//    if (currentNode.getID() == this.getInicio().getID()) {
-//                this.inicio = null;
-//            } else
-    
-    
-    
-    
-    
-    
-
-    // Método para ser utilizado na LISTA ALOCADA
-//    public void endereco () {
-//        No nextNode = this.inicio;
-//        No currentNode = null;
-//
-//        while( nextNode != null ){
-//            currentNode = nextNode; // Salva o No anterior
-//            System.out.println(currentNode.getEndereco());
-//            nextNode = nextNode.getProx(); // Pega o próximo No
-//        }
-//    }
-//
-//    // versao recursiva
-//    public boolean buscaRec(int x ){
-//        return busca(x, this.inicio);
-//    }
-//
-//    private boolean busca(int target, No nextNode){
-//        // condicoes de parada
-//        if( nextNode == null )
-//            return false;
-//
-//        if( nextNode.getID() == target)
-//            return true;
-//
-//        return busca(target, nextNode.getProx());
-//    }
 }

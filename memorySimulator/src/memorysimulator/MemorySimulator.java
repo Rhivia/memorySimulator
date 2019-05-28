@@ -24,6 +24,7 @@ public class MemorySimulator {
         running = true;
         processID = 1; // Começo dos processos, IDs serão incrementais
 
+        feedbackForUser();
         while(running) {
             System.out.println("----------------------------------------");
             System.out.println("- 1 - Para adicionar um processo.");
@@ -65,10 +66,10 @@ public class MemorySimulator {
             listaLivre = listaAlocada.addAlocada(processID, memory, listaLivre);
 
             System.out.println("- Processo: " + processID + " alocado com sucesso.");
-            System.out.println("----------------------------------------");
+            System.out.println("-------------------------------------------------");
             System.out.println("- Espaço disponível: " + listaLivre.availableSpace());
             System.out.println("- Espaço alocado: " + listaAlocada.usedSpace());
-            System.out.println("----------------------------------------");
+            System.out.println("-------------------------------------------------");
         } else {
             System.out.println("- Memória cheia. É necessário remover um processo.");
             System.out.println("----------------------------------------");
@@ -79,9 +80,5 @@ public class MemorySimulator {
         No no = listaAlocada.buscaERemove(ID);
         if (no != null) listaLivre.addOrdenado(no);
         listaLivre.clearNodes();
-        // System.out.println("No: " + no.getID() + ", no endereço: " + no.getEndereco() + ", tamanho: " + no.getTamanho());
-        if ( no != null && (no.getEndereco() + no.getTamanho()) == listaLivre.getInicio().getEndereco() ) {
-            listaLivre.getInicio().setEndereco( no.getEndereco() );
-        }
     }
 }
