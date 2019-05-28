@@ -64,11 +64,6 @@ public class listaLigada {
         return false;
     }
 
-
-    // Adiciona No a LISTA LIVRE, chamada somente quando um processo é finalizado
-    // para separar os Nos de memória
-
-
     // Adiciona No a LISTA ALOCADA
     public listaLigada addAlocada(int noID, int tamanho, listaLigada listaLivre) {
         // LISTA LIVRE é recebida como parametro
@@ -102,20 +97,23 @@ public class listaLigada {
         No currentNode = this.inicio;
         No nextNode = null;
         int enderecoFinal;
-        
-        if (currentNode.getProx() != null) {
-            nextNode = currentNode.getProx();
-        }
-
-        while( currentNode != null ){
+                
+        while ( currentNode != null && currentNode.getProx() != null ) {
             enderecoFinal = currentNode.getEndereco() + currentNode.getTamanho();
-            
-            if ( nextNode != null && enderecoFinal == nextNode.getEndereco()) {
+            nextNode = currentNode.getProx();
+
+            while ( nextNode != null && enderecoFinal == nextNode.getEndereco() ) {
+                // Atualiza tamanho do NODE atual a ser atualizado
+                currentNode.setTamanho(nextNode.getTamanho() + currentNode.getTamanho());
+                // Atualiza o proximo NODE para referencia
                 currentNode.setProx(nextNode.getProx());
-                currentNode.setTamanho(currentNode.getTamanho() + nextNode.getTamanho());
+                
+                // Atualiza NODE e tamanho para o segundo WHILE
+                nextNode = nextNode.getProx();
+                enderecoFinal = currentNode.getEndereco() + currentNode.getTamanho();
             }
             
-            currentNode = currentNode.getProx(); // Pega o próximo No
+            currentNode = currentNode.getProx();
         }
     }
 
@@ -129,7 +127,6 @@ public class listaLigada {
             if (atual.getTamanho() >= tamanho && selected.getTamanho() <= atual.getTamanho()) {
                 selected = atual; // Selectiona o No que tem o tamanho apropriada para o processo
             }
-
             atual = atual.getProx(); // Pega o próximo No
         }
 
